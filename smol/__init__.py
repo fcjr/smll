@@ -1,6 +1,6 @@
 """Smol compression library."""
 
-from typing import Union
+from typing import Union, Optional
 
 try:
     from . import _smol
@@ -81,6 +81,74 @@ class Compressor:
         """Exit context manager."""
         # C++ destructor will be called automatically when _compressor is freed
         return False
+
+    @classmethod
+    def from_pretrained(
+        cls,
+        repo_id: str,
+        filename: Optional[str] = None,
+        *,
+        local_dir: Optional[str] = None,
+        local_dir_use_symlinks: bool = True,
+        cache_dir: Optional[str] = None,
+        revision: Optional[str] = None,
+    ) -> "Compressor":
+        """
+        Download and load a model from Hugging Face Hub.
+
+        Args:
+            repo_id: Hugging Face repository ID (e.g., "TheBloke/Mistral-7B-GGUF")
+            filename: Specific model filename to download. If None, will try to auto-detect
+            local_dir: Local directory to save the model (optional)
+            local_dir_use_symlinks: Whether to use symlinks when downloading
+            cache_dir: Optional cache directory for downloads
+            revision: Git revision (branch, tag, or commit hash)
+
+        Returns:
+            Compressor instance with the downloaded model
+
+        Example:
+            >>> compressor = Compressor.from_pretrained(
+            ...     "TheBloke/Mistral-7B-Instruct-v0.1-GGUF",
+            ...     filename="mistral-7b-instruct-v0.1.Q4_K_M.gguf"
+            ... )
+        """
+        try:
+            from huggingface_hub import hf_hub_download, list_repo_files
+        except ImportError:
+            raise ImportError(
+                "huggingface-hub is required to use from_pretrained. "
+                "Install it with: uv add huggingface-hub"
+            )
+
+        # Auto-detect filename if not provided
+        if filename is None:
+            files = list_repo_files(repo_id, revision=revision)
+            gguf_files = [f for f in files if f.endswith(".gguf")]
+
+            if not gguf_files:
+                raise ValueError(f"No GGUF files found in repository {repo_id}")
+
+            if len(gguf_files) == 1:
+                filename = gguf_files[0]
+            else:
+                raise ValueError(
+                    f"Multiple GGUF files found in {repo_id}. "
+                    f"Please specify one with the 'filename' parameter: {gguf_files}"
+                )
+
+        # Download the model file
+        model_path = hf_hub_download(
+            repo_id=repo_id,
+            filename=filename,
+            local_dir=local_dir,
+            local_dir_use_symlinks=local_dir_use_symlinks,
+            cache_dir=cache_dir,
+            revision=revision,
+        )
+
+        # Create and return Compressor instance
+        return cls(model_path)
 
 
 __all__ = ["Compressor"]

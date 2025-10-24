@@ -3,6 +3,7 @@
 
 import smol
 
+
 def main():
     # Example data to compress
     text = "Hello, this is a test string for compression!"
@@ -38,18 +39,30 @@ def main():
                 except RuntimeError as e:
                     print(f"Decompression error: {e}")
             else:
-                print("Note: Compression returned empty bitstream (stub implementation)")
-                print("Replace the C++ stubs in include/smol.cpp with actual implementation")
+                print(
+                    "Note: Compression returned empty bitstream (stub implementation)"
+                )
+                print(
+                    "Replace the C++ stubs in include/smol.cpp with actual implementation"
+                )
         # Model is automatically freed here
     except RuntimeError as e:
         print(f"Error: {e}")
         print("Make sure the model file exists at the specified path")
 
     print()
-    print("Alternative usage without context manager:")
-    print("compressor = smol.Compressor('model.gguf')")
-    print("compressed = compressor.compress('text')")
-    print("# Model freed automatically when compressor goes out of scope")
+    print("Alternative usage patterns:")
+    print("1. Without context manager:")
+    print("   compressor = smol.Compressor('model.gguf')")
+    print("   compressed = compressor.compress('text')")
+    print("   # Model freed automatically when compressor goes out of scope")
+    print()
+    print("2. From Hugging Face:")
+    print("   compressor = smol.Compressor.from_pretrained(")
+    print("       'TheBloke/Mistral-7B-Instruct-v0.1-GGUF',")
+    print("       filename='mistral-7b-instruct-v0.1.Q4_K_M.gguf'")
+    print("   )")
+
 
 if __name__ == "__main__":
     main()
