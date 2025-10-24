@@ -7,15 +7,19 @@ import smol
 def main():
     # Example data to compress
     text = "Hello, this is a test string for compression!"
-    model_path = "models/gpt2.gguf"  # Path to your GGUF model file
 
     print(f"Original text: {text}")
-    print(f"Using model: {model_path}")
+    print(f"Loading model from Hugging Face...")
     print()
 
     # Use context manager for automatic cleanup (recommended)
     try:
-        with smol.Compressor(model_path) as compressor:
+        with smol.Compressor.from_pretrained(
+            repo_id="QuantFactory/Meta-Llama-3-8B-GGUF",
+            filename="*Q8_0.gguf",
+        ) as compressor:
+            print(f"Model loaded: {compressor.model_path}")
+            print()
             # Compress the data
             print("Compressing...")
             compressed = compressor.compress(text)

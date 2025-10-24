@@ -121,20 +121,39 @@ class Compressor:
                 "Install it with: uv add huggingface-hub"
             )
 
-        # Auto-detect filename if not provided
+        # List all files in the repo
+        files = list_repo_files(repo_id, revision=revision)
+        gguf_files = [f for f in files if f.endswith(".gguf")]
+
+        if not gguf_files:
+            raise ValueError(f"No GGUF files found in repository {repo_id}")
+
+        # Handle filename (None or pattern)
         if filename is None:
-            files = list_repo_files(repo_id, revision=revision)
-            gguf_files = [f for f in files if f.endswith(".gguf")]
-
-            if not gguf_files:
-                raise ValueError(f"No GGUF files found in repository {repo_id}")
-
             if len(gguf_files) == 1:
                 filename = gguf_files[0]
             else:
                 raise ValueError(
                     f"Multiple GGUF files found in {repo_id}. "
                     f"Please specify one with the 'filename' parameter: {gguf_files}"
+                )
+        elif "*" in filename or "?" in filename:
+            # Handle wildcard pattern
+            import fnmatch
+            matched_files = [f for f in gguf_files if fnmatch.fnmatch(f, filename)]
+
+            if not matched_files:
+                raise ValueError(
+                    f"No GGUF files matching pattern '{filename}' found in {repo_id}. "
+                    f"Available files: {gguf_files}"
+                )
+
+            if len(matched_files) == 1:
+                filename = matched_files[0]
+            else:
+                raise ValueError(
+                    f"Multiple GGUF files match pattern '{filename}' in {repo_id}: {matched_files}. "
+                    f"Please be more specific."
                 )
 
         # Download the model file
