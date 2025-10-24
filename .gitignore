@@ -1,0 +1,22 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Compiled extensions
+*.so
+*.dylib
+*.dll
+*.pyd
+
+# CMake
+_skbuild/
+*.cmake
+CMakeCache.txt
+CMakeFiles/
+
+# Virtual environments
+.venv

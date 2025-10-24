@@ -1,0 +1,16 @@
+[project]
+name = "smol"
+version = "0.1.0"
+description = "Compression library with C++ backend"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["scikit-build-core>=0.9.2", "pybind11>=2.10.0"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+cmake.verbose = true
+cmake.build-type = "Release"
+wheel.packages = ["smol"]
