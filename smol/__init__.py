@@ -1,6 +1,9 @@
 """Smol compression library."""
 
-from typing import Union, Optional
+import json
+import os
+from pathlib import Path
+from typing import Union, Optional, List
 
 try:
     from . import _smol
@@ -87,22 +90,15 @@ class Compressor:
         cls,
         repo_id: str,
         filename: Optional[str] = None,
-        *,
-        local_dir: Optional[str] = None,
-        local_dir_use_symlinks: bool = True,
-        cache_dir: Optional[str] = None,
-        revision: Optional[str] = None,
+        additional_files: Optional[List[str]] = None,
     ) -> "Compressor":
         """
         Download and load a model from Hugging Face Hub.
 
         Args:
-            repo_id: Hugging Face repository ID (e.g., "TheBloke/Mistral-7B-GGUF")
-            filename: Specific model filename to download. If None, will try to auto-detect
-            local_dir: Local directory to save the model (optional)
-            local_dir_use_symlinks: Whether to use symlinks when downloading
-            cache_dir: Optional cache directory for downloads
-            revision: Git revision (branch, tag, or commit hash)
+            repo_id: The model repo id (e.g., "TheBloke/Mistral-7B-GGUF")
+            filename: A filename or glob pattern to match the model file in the repo
+            additional_files: A list of filenames or glob patterns to match additional model files in the repo
 
         Returns:
             Compressor instance with the downloaded model
@@ -114,56 +110,90 @@ class Compressor:
             ... )
         """
         try:
-            from huggingface_hub import hf_hub_download, list_repo_files
+            from huggingface_hub import hf_hub_download, HfFileSystem
+            from huggingface_hub.utils import validate_repo_id
+            import fnmatch
         except ImportError:
             raise ImportError(
-                "huggingface-hub is required to use from_pretrained. "
-                "Install it with: uv add huggingface-hub"
+                "Compressor.from_pretrained requires the huggingface-hub package. "
+                "You can install it with: uv add huggingface-hub"
             )
 
-        # List all files in the repo
-        files = list_repo_files(repo_id, revision=revision)
-        gguf_files = [f for f in files if f.endswith(".gguf")]
+        validate_repo_id(repo_id)
 
-        if not gguf_files:
-            raise ValueError(f"No GGUF files found in repository {repo_id}")
+        hffs = HfFileSystem()
 
-        # Handle filename (None or pattern)
-        if filename is None:
-            if len(gguf_files) == 1:
-                filename = gguf_files[0]
-            else:
-                raise ValueError(
-                    f"Multiple GGUF files found in {repo_id}. "
-                    f"Please specify one with the 'filename' parameter: {gguf_files}"
+        files = [
+            file["name"] if isinstance(file, dict) else file
+            for file in hffs.ls(repo_id, recursive=True)
+        ]
+
+        # split each file into repo_id, subfolder, filename
+        file_list: List[str] = []
+        for file in files:
+            rel_path = Path(file).relative_to(repo_id)
+            file_list.append(str(rel_path))
+
+        # find the only/first shard file:
+        matching_files = [file for file in file_list if fnmatch.fnmatch(file, filename)]  # type: ignore
+
+        if len(matching_files) == 0:
+            raise ValueError(
+                f"No file found in {repo_id} that match {filename}\n\n"
+                f"Available Files:\n{json.dumps(file_list)}"
+            )
+
+        if len(matching_files) > 1:
+            raise ValueError(
+                f"Multiple files found in {repo_id} matching {filename}\n\n"
+                f"Available Files:\n{json.dumps(file_list)}"
+            )
+
+        (matching_file,) = matching_files
+
+        subfolder = str(Path(matching_file).parent)
+        filename = Path(matching_file).name
+
+        # download the file
+        hf_hub_download(
+            repo_id=repo_id,
+            filename=filename,
+            subfolder=subfolder,
+        )
+
+        if additional_files:
+            for additional_file_name in additional_files:
+                # find the additional shard file:
+                matching_additional_files = [
+                    file for file in file_list if fnmatch.fnmatch(file, additional_file_name)
+                ]
+
+                if len(matching_additional_files) == 0:
+                    raise ValueError(
+                        f"No file found in {repo_id} that match {additional_file_name}\n\n"
+                        f"Available Files:\n{json.dumps(file_list)}"
+                    )
+
+                if len(matching_additional_files) > 1:
+                    raise ValueError(
+                        f"Multiple files found in {repo_id} matching {additional_file_name}\n\n"
+                        f"Available Files:\n{json.dumps(file_list)}"
+                    )
+
+                (matching_additional_file,) = matching_additional_files
+
+                # download the additional file
+                hf_hub_download(
+                    repo_id=repo_id,
+                    filename=matching_additional_file,
+                    subfolder=subfolder,
                 )
-        elif "*" in filename or "?" in filename:
-            # Handle wildcard pattern
-            import fnmatch
-            matched_files = [f for f in gguf_files if fnmatch.fnmatch(f, filename)]
 
-            if not matched_files:
-                raise ValueError(
-                    f"No GGUF files matching pattern '{filename}' found in {repo_id}. "
-                    f"Available files: {gguf_files}"
-                )
-
-            if len(matched_files) == 1:
-                filename = matched_files[0]
-            else:
-                raise ValueError(
-                    f"Multiple GGUF files match pattern '{filename}' in {repo_id}: {matched_files}. "
-                    f"Please be more specific."
-                )
-
-        # Download the model file
         model_path = hf_hub_download(
             repo_id=repo_id,
             filename=filename,
-            local_dir=local_dir,
-            local_dir_use_symlinks=local_dir_use_symlinks,
-            cache_dir=cache_dir,
-            revision=revision,
+            subfolder=subfolder,
+            local_files_only=True,
         )
 
         # Create and return Compressor instance
