@@ -63,34 +63,49 @@ private:
         const llama_vocab* vocab = llama_model_get_vocab(model);
         int32_t n_vocab = llama_vocab_n_tokens(vocab);
 
-        // Check if we hit a window boundary - if so, reset completely
+        // Check if we hit a window boundary - if so, recreate context and start fresh
         bool at_window_boundary = (context_tokens.size() > 0 && context_tokens.size() % WINDOW_SIZE == 0);
 
-        // Check if we need to rebuild context
-        // Always rebuild if context is empty (to evaluate BOS)
-        // Or if cache size doesn't match context size
-        // Or if we hit a window boundary
-        bool need_rebuild = context_tokens.empty() ||
-                           (kv_cache_size != context_tokens.size()) ||
-                           at_window_boundary;
-
-        if (need_rebuild) {
-            // Note: We don't recreate context here since this is called in a loop
-            // The context was freshly created at the start of compress/decompress
-            // Just reset the KV cache tracking
+        if (at_window_boundary) {
+            // Recreate context to clear KV cache
+            if (ctx) {
+                llama_free(ctx);
+            }
+            llama_context_params ctx_params = llama_context_default_params();
+            ctx_params.n_ctx = WINDOW_SIZE * 2;
+            ctx_params.n_batch = 1;
+            ctx = llama_new_context_with_model(model, ctx_params);
+            if (!ctx) {
+                throw std::runtime_error("Failed to recreate context at window boundary");
+            }
             kv_cache_size = 0;
 
-            if (context_tokens.empty() || at_window_boundary) {
-                // Evaluate BOS to get first token probs (or reset at boundary)
-                llama_token bos = llama_vocab_bos(vocab);
-                llama_decode(ctx, llama_batch_get_one(&bos, 1));
-            } else {
-                // Evaluate all context tokens
-                for (size_t i = 0; i < context_tokens.size(); i++) {
-                    llama_token token = context_tokens[i];
-                    llama_decode(ctx, llama_batch_get_one(&token, 1));
+            // At window boundary, start fresh with just BOS
+            llama_token bos = llama_vocab_bos(vocab);
+            llama_decode(ctx, llama_batch_get_one(&bos, 1));
+
+            // Don't rebuild again below
+        } else {
+            // Check if we need to rebuild context
+            // Always rebuild if context is empty (to evaluate BOS)
+            // Or if cache size doesn't match context size
+            bool need_rebuild = context_tokens.empty() || (kv_cache_size != context_tokens.size());
+
+            if (need_rebuild) {
+                kv_cache_size = 0;
+
+                if (context_tokens.empty()) {
+                    // Evaluate BOS to get first token probs
+                    llama_token bos = llama_vocab_bos(vocab);
+                    llama_decode(ctx, llama_batch_get_one(&bos, 1));
+                } else {
+                    // Evaluate all context tokens
+                    for (size_t i = 0; i < context_tokens.size(); i++) {
+                        llama_token token = context_tokens[i];
+                        llama_decode(ctx, llama_batch_get_one(&token, 1));
+                    }
+                    kv_cache_size = context_tokens.size();
                 }
-                kv_cache_size = context_tokens.size();
             }
         }
 
@@ -198,10 +213,11 @@ public:
         int underflow_count = 0;
 
         for (size_t i = 0; i < tokens.size(); i++) {
-            // Get context up to current position (tokens 0 to i-1)
-            std::vector<int32_t> context(tokens.begin(), tokens.begin() + i);
+            // Get context within current window only
+            size_t window_start = (i / WINDOW_SIZE) * WINDOW_SIZE;
+            std::vector<int32_t> context(tokens.begin() + window_start, tokens.begin() + i);
             std::vector<double> probs = get_token_probs(context);
-            // After get_token_probs, kv_cache_size = i (we have context of i tokens)
+            // After get_token_probs, kv_cache_size = context.size() (tokens within window)
 
             int32_t token = tokens[i];
             const llama_vocab* vocab = llama_model_get_vocab(model);
@@ -334,8 +350,14 @@ public:
         std::vector<int32_t> decompressed_tokens;
 
         for (uint32_t i = 0; i < num_tokens; i++) {
-            std::vector<double> probs = get_token_probs(decompressed_tokens);
-            // After get_token_probs, kv_cache_size = decompressed_tokens.size()
+            // Get context within current window only
+            size_t window_start = (i / WINDOW_SIZE) * WINDOW_SIZE;
+            std::vector<int32_t> context(
+                decompressed_tokens.begin() + window_start,
+                decompressed_tokens.end()
+            );
+            std::vector<double> probs = get_token_probs(context);
+            // After get_token_probs, kv_cache_size = context.size()
 
             // Sort tokens by probability
             std::vector<int32_t> sorted_tokens(n_vocab);
