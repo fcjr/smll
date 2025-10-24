@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cstring>
 #include "llama.h"
+#include "ggml.h"
 
 namespace py = pybind11;
 
@@ -132,6 +133,9 @@ private:
 public:
     // Constructor - loads the model
     Compressor(const std::string& path) : model_path(path), ctx(nullptr), kv_cache_size(0) {
+        // Suppress llama.cpp logging
+        llama_log_set([](enum ggml_log_level, const char *, void *) {}, nullptr);
+
         llama_model_params params = llama_model_default_params();
         params.vocab_only = false;
 
