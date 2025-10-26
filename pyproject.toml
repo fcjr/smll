@@ -20,4 +20,5 @@ wheel.packages = ["smll"]
 [dependency-groups]
 dev = [
     "ipykernel>=7.0.1",
+    "zstd>=1.5.7.2",
 ]
