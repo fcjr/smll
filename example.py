@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Example script demonstrating the smol compression library."""
+"""Example script demonstrating the smll compression library."""
 
-import smol
+import smll
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
 
     # Use context manager for automatic cleanup (recommended)
     try:
-        with smol.Compressor.from_pretrained(
+        with smll.Compressor.from_pretrained(
             repo_id="QuantFactory/Meta-Llama-3-8B-GGUF",
             filename="*Q8_0.gguf",
         ) as compressor:
@@ -47,7 +47,7 @@ def main():
                     "Note: Compression returned empty bitstream (stub implementation)"
                 )
                 print(
-                    "Replace the C++ stubs in include/smol.cpp with actual implementation"
+                    "Replace the C++ stubs in include/smll.cpp with actual implementation"
                 )
         # Model is automatically freed here
     except RuntimeError as e:
@@ -57,12 +57,12 @@ def main():
     print()
     print("Alternative usage patterns:")
     print("1. Without context manager:")
-    print("   compressor = smol.Compressor('model.gguf')")
+    print("   compressor = smll.Compressor('model.gguf')")
     print("   compressed = compressor.compress('text')")
     print("   # Model freed automatically when compressor goes out of scope")
     print()
     print("2. From Hugging Face:")
-    print("   compressor = smol.Compressor.from_pretrained(")
+    print("   compressor = smll.Compressor.from_pretrained(")
     print("       'TheBloke/Mistral-7B-Instruct-v0.1-GGUF',")
     print("       filename='mistral-7b-instruct-v0.1.Q4_K_M.gguf'")
     print("   )")

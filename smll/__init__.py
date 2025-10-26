@@ -1,4 +1,4 @@
-"""Smol compression library."""
+"""Smll compression library."""
 
 import json
 import os
@@ -6,9 +6,9 @@ from pathlib import Path
 from typing import Union, Optional, List
 
 try:
-    from . import _smol
+    from . import _smll
 except ImportError:
-    import _smol
+    import _smll
 
 
 class Compressor:
@@ -41,7 +41,7 @@ class Compressor:
         Raises:
             RuntimeError: If the model cannot be loaded
         """
-        self._compressor = _smol.Compressor(model_path)
+        self._compressor = _smll.Compressor(model_path)
 
     def compress(self, data: str) -> bytes:
         """

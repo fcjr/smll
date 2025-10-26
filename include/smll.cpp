@@ -1,5 +1,5 @@
-#ifndef SMOL_HPP
-#define SMOL_HPP
+#ifndef SMLL_HPP
+#define SMLL_HPP
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -14,7 +14,7 @@
 
 namespace py = pybind11;
 
-namespace smol {
+namespace smll {
 
 // Arithmetic coding constants
 const uint8_t PRECISION = 32;
@@ -64,49 +64,25 @@ private:
         const llama_vocab* vocab = llama_model_get_vocab(model);
         int32_t n_vocab = llama_vocab_n_tokens(vocab);
 
-        // Check if we hit a window boundary - if so, recreate context and start fresh
-        bool at_window_boundary = (context_tokens.size() > 0 && context_tokens.size() % WINDOW_SIZE == 0);
+        // Check if we need to rebuild context
+        // Only rebuild if context is empty (first token) or cache size doesn't match
+        bool need_rebuild = context_tokens.empty() || (kv_cache_size != context_tokens.size());
 
-        if (at_window_boundary) {
-            // Recreate context to clear KV cache
-            if (ctx) {
-                llama_free(ctx);
-            }
-            llama_context_params ctx_params = llama_context_default_params();
-            ctx_params.n_ctx = WINDOW_SIZE * 2;
-            ctx_params.n_batch = 1;
-            ctx = llama_new_context_with_model(model, ctx_params);
-            if (!ctx) {
-                throw std::runtime_error("Failed to recreate context at window boundary");
-            }
+        if (need_rebuild) {
             kv_cache_size = 0;
 
-            // At window boundary, start fresh with just BOS
-            llama_token bos = llama_vocab_bos(vocab);
-            llama_decode(ctx, llama_batch_get_one(&bos, 1));
-
-            // Don't rebuild again below
-        } else {
-            // Check if we need to rebuild context
-            // Always rebuild if context is empty (to evaluate BOS)
-            // Or if cache size doesn't match context size
-            bool need_rebuild = context_tokens.empty() || (kv_cache_size != context_tokens.size());
-
-            if (need_rebuild) {
-                kv_cache_size = 0;
-
-                if (context_tokens.empty()) {
-                    // Evaluate BOS to get first token probs
-                    llama_token bos = llama_vocab_bos(vocab);
-                    llama_decode(ctx, llama_batch_get_one(&bos, 1));
-                } else {
-                    // Evaluate all context tokens
-                    for (size_t i = 0; i < context_tokens.size(); i++) {
-                        llama_token token = context_tokens[i];
-                        llama_decode(ctx, llama_batch_get_one(&token, 1));
-                    }
-                    kv_cache_size = context_tokens.size();
+            if (context_tokens.empty()) {
+                // Evaluate BOS to get first token probs
+                llama_token bos = llama_vocab_bos(vocab);
+                llama_decode(ctx, llama_batch_get_one(&bos, 1));
+                // Note: kv_cache_size stays 0 because we don't count BOS
+            } else {
+                // Evaluate all context tokens
+                for (size_t i = 0; i < context_tokens.size(); i++) {
+                    llama_token token = context_tokens[i];
+                    llama_decode(ctx, llama_batch_get_one(&token, 1));
                 }
+                kv_cache_size = context_tokens.size();
             }
         }
 
@@ -210,22 +186,28 @@ public:
         }
         kv_cache_size = 0;
 
+        // Append EOS token to tokens
+        llama_token eos_token = llama_vocab_eos(vocab);
+        std::vector<int32_t> tokens_with_eos = tokens;
+        tokens_with_eos.push_back(eos_token);
+
+
         // Arithmetic coding
         uint64_t lo = 0;
         uint64_t hi = MAX_RANGE;
         std::vector<int> output_bits;
         int underflow_count = 0;
 
-        for (size_t i = 0; i < tokens.size(); i++) {
-            // Get context within current window only
-            size_t window_start = (i / WINDOW_SIZE) * WINDOW_SIZE;
-            std::vector<int32_t> context(tokens.begin() + window_start, tokens.begin() + i);
+        for (size_t i = 0; i < tokens_with_eos.size(); i++) {
+            // Get all previous tokens as context (no windowing)
+            std::vector<int32_t> context(tokens_with_eos.begin(), tokens_with_eos.begin() + i);
             std::vector<double> probs = get_token_probs(context);
-            // After get_token_probs, kv_cache_size = context.size() (tokens within window)
+            // After get_token_probs, kv_cache_size = context.size()
 
-            int32_t token = tokens[i];
+            int32_t token = tokens_with_eos[i];
             const llama_vocab* vocab = llama_model_get_vocab(model);
             int32_t n_vocab = llama_vocab_n_tokens(vocab);
+
 
             // Sort tokens by probability
             std::vector<int32_t> sorted_tokens(n_vocab);
@@ -291,15 +273,7 @@ public:
         // Convert bits to bytes
         std::vector<uint8_t> compressed_data = bits_to_bytes(output_bits);
 
-        // Prepend token count (big-endian 4 bytes)
-        std::vector<uint8_t> result(4 + compressed_data.size());
-        result[0] = (tokens.size() >> 24) & 0xFF;
-        result[1] = (tokens.size() >> 16) & 0xFF;
-        result[2] = (tokens.size() >> 8) & 0xFF;
-        result[3] = tokens.size() & 0xFF;
-        std::copy(compressed_data.begin(), compressed_data.end(), result.begin() + 4);
-
-        return result;
+        return compressed_data;
     }
 
     // Decompress function - takes bit stream, returns string or throws
@@ -308,19 +282,12 @@ public:
             throw std::runtime_error("Model not loaded");
         }
 
-        if (bitstream.size() < 4) {
-            throw std::runtime_error("Invalid compressed data: too short");
+        if (bitstream.empty()) {
+            throw std::runtime_error("Invalid compressed data: empty");
         }
 
-        // Read token count (big-endian 4 bytes)
-        uint32_t num_tokens = (static_cast<uint32_t>(bitstream[0]) << 24) |
-                              (static_cast<uint32_t>(bitstream[1]) << 16) |
-                              (static_cast<uint32_t>(bitstream[2]) << 8) |
-                              static_cast<uint32_t>(bitstream[3]);
-
-        // Extract compressed data
-        std::vector<uint8_t> compressed_data(bitstream.begin() + 4, bitstream.end());
-        std::vector<int> bits = bytes_to_bits(compressed_data);
+        // Convert bitstream to bits
+        std::vector<int> bits = bytes_to_bits(bitstream);
 
         // Recreate context to ensure clean state
         if (ctx) {
@@ -348,18 +315,15 @@ public:
 
         const llama_vocab* vocab = llama_model_get_vocab(model);
         int32_t n_vocab = llama_vocab_n_tokens(vocab);
+        llama_token eos_token = llama_vocab_eos(vocab);
 
         uint64_t lo = 0;
         uint64_t hi = MAX_RANGE;
         std::vector<int32_t> decompressed_tokens;
 
-        for (uint32_t i = 0; i < num_tokens; i++) {
-            // Get context within current window only
-            size_t window_start = (i / WINDOW_SIZE) * WINDOW_SIZE;
-            std::vector<int32_t> context(
-                decompressed_tokens.begin() + window_start,
-                decompressed_tokens.end()
-            );
+        while (true) {
+            // Get all previous tokens as context (no windowing)
+            std::vector<int32_t> context(decompressed_tokens.begin(), decompressed_tokens.end());
             std::vector<double> probs = get_token_probs(context);
             // After get_token_probs, kv_cache_size = context.size()
 
@@ -391,7 +355,7 @@ public:
             if (rank >= n_vocab) rank = n_vocab - 1;
 
             int32_t token = sorted_tokens[rank];
-            decompressed_tokens.push_back(token);
+
 
             // Calculate probability range
             double prob_before = (rank > 0) ? cdf[rank - 1] : 0.0;
@@ -400,10 +364,6 @@ public:
             // Update interval
             lo = lo + static_cast<uint64_t>(prob_before * width);
             hi = lo + std::max(1ULL, static_cast<uint64_t>(token_prob * width));
-
-            // Add this token to KV cache for next iteration
-            llama_decode(ctx, llama_batch_get_one(&token, 1));
-            kv_cache_size++;
 
             // Renormalize
             while (true) {
@@ -435,6 +395,16 @@ public:
                     break;
                 }
             }
+
+            // Check for EOS token - if found, stop decoding
+            if (token == eos_token) {
+                break;
+            }
+
+            // Add to output and KV cache for next iteration
+            decompressed_tokens.push_back(token);
+            llama_decode(ctx, llama_batch_get_one(&token, 1));
+            kv_cache_size++;
         }
 
         // Detokenize
@@ -456,30 +426,30 @@ public:
     }
 };
 
-} // namespace smol
+} // namespace smll
 
-PYBIND11_MODULE(_smol, m) {
-    m.doc() = "Smol compression library";
+PYBIND11_MODULE(_smll, m) {
+    m.doc() = "Smll compression library";
 
-    py::class_<smol::Compressor>(m, "Compressor")
+    py::class_<smll::Compressor>(m, "Compressor")
         .def(py::init<const std::string&>(),
              py::arg("model_path"),
              "Create a new Compressor with the specified model")
-        .def("compress", &smol::Compressor::compress,
+        .def("compress", &smll::Compressor::compress,
              py::arg("data"),
              "Compress a string and return a bitstream")
-        .def("decompress", &smol::Compressor::decompress,
+        .def("decompress", &smll::Compressor::decompress,
              py::arg("bitstream"),
              "Decompress a bitstream and return a string")
-        .def("__enter__", [](smol::Compressor &self) -> smol::Compressor& {
+        .def("__enter__", [](smll::Compressor &self) -> smll::Compressor& {
             return self;
         })
-        .def("__exit__", [](smol::Compressor &self, py::object exc_type, py::object exc_value, py::object traceback) {
+        .def("__exit__", [](smll::Compressor &self, py::object exc_type, py::object exc_value, py::object traceback) {
             // Destructor will be called automatically
             return false;
         })
-        .def_property_readonly("model_path", &smol::Compressor::get_model_path,
+        .def_property_readonly("model_path", &smll::Compressor::get_model_path,
              "Get the path to the loaded model");
 }
 
-#endif // SMOL_HPP
+#endif // SMLL_HPP

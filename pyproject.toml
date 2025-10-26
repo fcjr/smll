@@ -1,5 +1,5 @@
 [project]
-name = "smol"
+name = "smll"
 version = "0.1.0"
 description = "Compression library with C++ backend"
 readme = "README.md"
@@ -15,4 +15,9 @@ build-backend = "scikit_build_core.build"
 [tool.scikit-build]
 cmake.verbose = true
 cmake.build-type = "Release"
-wheel.packages = ["smol"]
+wheel.packages = ["smll"]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.0.1",
+]
