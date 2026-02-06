@@ -21,4 +21,6 @@ wheel.packages = ["smll"]
 dev = [
     "ipykernel>=7.0.1",
     "zstd>=1.5.7.2",
+    "matplotlib>=3.8.0",
+    "numpy>=1.26.0",
 ]

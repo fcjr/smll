@@ -1,0 +1,750 @@
+{
+  "content_types": {
+    "results": {
+      "Python Code": {
+        "original_size": 1121,
+        "smll": {
+          "size": 107,
+          "ratio": 10.476635514018692,
+          "time": 1.3803751659579575,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 351,
+          "ratio": 3.1937321937321936,
+          "time": 3.108312375843525e-05
+        },
+        "bz2": {
+          "size": 401,
+          "ratio": 2.7955112219451372,
+          "time": 0.0002304580993950367
+        },
+        "lzma": {
+          "size": 420,
+          "ratio": 2.669047619047619,
+          "time": 0.003107750089839101
+        },
+        "zstd": {
+          "size": 351,
+          "ratio": 3.1937321937321936,
+          "time": 0.000157209113240242
+        }
+      },
+      "JavaScript Code": {
+        "original_size": 1009,
+        "smll": {
+          "size": 158,
+          "ratio": 6.386075949367089,
+          "time": 1.4308172080200166,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 425,
+          "ratio": 2.3741176470588234,
+          "time": 2.808310091495514e-05
+        },
+        "bz2": {
+          "size": 492,
+          "ratio": 2.0508130081300813,
+          "time": 0.00021666614338755608
+        },
+        "lzma": {
+          "size": 512,
+          "ratio": 1.970703125,
+          "time": 0.0006660840008407831
+        },
+        "zstd": {
+          "size": 440,
+          "ratio": 2.293181818181818,
+          "time": 0.00010449998080730438
+        }
+      },
+      "C Code": {
+        "original_size": 884,
+        "smll": {
+          "size": 79,
+          "ratio": 11.189873417721518,
+          "time": 1.3694569591898471,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 340,
+          "ratio": 2.6,
+          "time": 2.7791829779744148e-05
+        },
+        "bz2": {
+          "size": 393,
+          "ratio": 2.2493638676844783,
+          "time": 0.00018258299678564072
+        },
+        "lzma": {
+          "size": 416,
+          "ratio": 2.125,
+          "time": 0.0005789159331470728
+        },
+        "zstd": {
+          "size": 349,
+          "ratio": 2.5329512893982806,
+          "time": 0.00010370882228016853
+        }
+      },
+      "Natural Prose": {
+        "original_size": 1082,
+        "smll": {
+          "size": 111,
+          "ratio": 9.747747747747749,
+          "time": 1.1730916250962764,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 597,
+          "ratio": 1.812395309882747,
+          "time": 3.67090106010437e-05
+        },
+        "bz2": {
+          "size": 627,
+          "ratio": 1.7256778309409888,
+          "time": 0.0001848330721259117
+        },
+        "lzma": {
+          "size": 728,
+          "ratio": 1.4862637362637363,
+          "time": 0.0006454579997807741
+        },
+        "zstd": {
+          "size": 604,
+          "ratio": 1.7913907284768211,
+          "time": 8.208304643630981e-05
+        }
+      },
+      "Wikipedia": {
+        "original_size": 1320,
+        "smll": {
+          "size": 89,
+          "ratio": 14.831460674157304,
+          "time": 1.1972686250228435,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 643,
+          "ratio": 2.052877138413686,
+          "time": 3.88328917324543e-05
+        },
+        "bz2": {
+          "size": 677,
+          "ratio": 1.9497784342688331,
+          "time": 0.000248083146288991
+        },
+        "lzma": {
+          "size": 768,
+          "ratio": 1.71875,
+          "time": 0.0007135418709367514
+        },
+        "zstd": {
+          "size": 652,
+          "ratio": 2.0245398773006134,
+          "time": 0.0001044590026140213
+        }
+      },
+      "JSON": {
+        "original_size": 857,
+        "smll": {
+          "size": 109,
+          "ratio": 7.862385321100917,
+          "time": 1.3420372910331935,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 315,
+          "ratio": 2.7206349206349207,
+          "time": 2.7125002816319466e-05
+        },
+        "bz2": {
+          "size": 372,
+          "ratio": 2.303763440860215,
+          "time": 0.0001735410187393427
+        },
+        "lzma": {
+          "size": 380,
+          "ratio": 2.2552631578947366,
+          "time": 0.0006222499068826437
+        },
+        "zstd": {
+          "size": 322,
+          "ratio": 2.6614906832298137,
+          "time": 0.00011066696606576443
+        }
+      },
+      "XML": {
+        "original_size": 893,
+        "smll": {
+          "size": 236,
+          "ratio": 3.7838983050847457,
+          "time": 1.4444057079963386,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 392,
+          "ratio": 2.2780612244897958,
+          "time": 2.6667024940252304e-05
+        },
+        "bz2": {
+          "size": 449,
+          "ratio": 1.9888641425389755,
+          "time": 0.0002027079463005066
+        },
+        "lzma": {
+          "size": 460,
+          "ratio": 1.941304347826087,
+          "time": 0.0005917081143707037
+        },
+        "zstd": {
+          "size": 391,
+          "ratio": 2.2838874680306906,
+          "time": 9.837490506470203e-05
+        }
+      },
+      "CSV": {
+        "original_size": 512,
+        "smll": {
+          "size": 122,
+          "ratio": 4.19672131147541,
+          "time": 1.3865784578956664,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 295,
+          "ratio": 1.735593220338983,
+          "time": 2.2042077034711838e-05
+        },
+        "bz2": {
+          "size": 322,
+          "ratio": 1.5900621118012421,
+          "time": 0.0001236249227076769
+        },
+        "lzma": {
+          "size": 364,
+          "ratio": 1.4065934065934067,
+          "time": 0.0004897080361843109
+        },
+        "zstd": {
+          "size": 306,
+          "ratio": 1.673202614379085,
+          "time": 4.9250200390815735e-05
+        }
+      },
+      "LLM-Generated": {
+        "original_size": 1197,
+        "smll": {
+          "size": 80,
+          "ratio": 14.9625,
+          "time": 1.2042704171035439,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 635,
+          "ratio": 1.8850393700787402,
+          "time": 3.9667123928666115e-05
+        },
+        "bz2": {
+          "size": 672,
+          "ratio": 1.78125,
+          "time": 0.00023245811462402344
+        },
+        "lzma": {
+          "size": 760,
+          "ratio": 1.575,
+          "time": 0.0006919580046087503
+        },
+        "zstd": {
+          "size": 645,
+          "ratio": 1.8558139534883722,
+          "time": 9.19171143323183e-05
+        }
+      },
+      "Random Text": {
+        "original_size": 500,
+        "smll": {
+          "size": 394,
+          "ratio": 1.2690355329949239,
+          "time": 1.6238110000267625,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 410,
+          "ratio": 1.2195121951219512,
+          "time": 2.070819027721882e-05
+        },
+        "bz2": {
+          "size": 478,
+          "ratio": 1.0460251046025104,
+          "time": 0.0001256659161299467
+        },
+        "lzma": {
+          "size": 500,
+          "ratio": 1.0,
+          "time": 0.00043629202991724014
+        },
+        "zstd": {
+          "size": 420,
+          "ratio": 1.1904761904761905,
+          "time": 3.0750175938010216e-05
+        }
+      },
+      "UUIDs": {
+        "original_size": 739,
+        "smll": {
+          "size": 787,
+          "ratio": 0.9390088945362135,
+          "time": 2.369719833135605,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 433,
+          "ratio": 1.7066974595842956,
+          "time": 2.091703936457634e-05
+        },
+        "bz2": {
+          "size": 454,
+          "ratio": 1.6277533039647578,
+          "time": 0.00012695812620222569
+        },
+        "lzma": {
+          "size": 588,
+          "ratio": 1.2568027210884354,
+          "time": 0.0005246670916676521
+        },
+        "zstd": {
+          "size": 420,
+          "ratio": 1.7595238095238095,
+          "time": 3.5833101719617844e-05
+        }
+      },
+      "Base64": {
+        "original_size": 400,
+        "smll": {
+          "size": 317,
+          "ratio": 1.2618296529968454,
+          "time": 1.5196786660235375,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 335,
+          "ratio": 1.1940298507462686,
+          "time": 1.9583851099014282e-05
+        },
+        "bz2": {
+          "size": 400,
+          "ratio": 1.0,
+          "time": 0.0001166248694062233
+        },
+        "lzma": {
+          "size": 428,
+          "ratio": 0.9345794392523364,
+          "time": 0.0004074589814990759
+        },
+        "zstd": {
+          "size": 341,
+          "ratio": 1.1730205278592376,
+          "time": 2.4624867364764214e-05
+        }
+      },
+      "Repetitive": {
+        "original_size": 600,
+        "smll": {
+          "size": 8,
+          "ratio": 75.0,
+          "time": 0.5302142919972539,
+          "verified": false,
+          "error": null
+        },
+        "gzip": {
+          "size": 27,
+          "ratio": 22.22222222222222,
+          "time": 1.7292099073529243e-05
+        },
+        "bz2": {
+          "size": 61,
+          "ratio": 9.836065573770492,
+          "time": 6.908411160111427e-05
+        },
+        "lzma": {
+          "size": 88,
+          "ratio": 6.818181818181818,
+          "time": 0.00038191722705960274
+        },
+        "zstd": {
+          "size": 30,
+          "ratio": 20.0,
+          "time": 1.4459015801548958e-05
+        }
+      }
+    },
+    "metadata": {}
+  },
+  "text_length": {
+    "results": {
+      "50": {
+        "original_size": 50,
+        "smll": {
+          "size": 14,
+          "ratio": 3.5714285714285716,
+          "time": 0.06454533408395946,
+          "bits_per_char": 2.24
+        },
+        "gzip": {
+          "size": 57,
+          "ratio": 0.8771929824561403,
+          "time": 1.4249933883547783e-05,
+          "bits_per_char": 9.12
+        },
+        "bz2": {
+          "size": 82,
+          "ratio": 0.6097560975609756,
+          "time": 3.554089926183224e-05,
+          "bits_per_char": 13.12
+        },
+        "lzma": {
+          "size": 108,
+          "ratio": 0.46296296296296297,
+          "time": 0.000338749960064888,
+          "bits_per_char": 17.28
+        },
+        "zstd": {
+          "size": 55,
+          "ratio": 0.9090909090909091,
+          "time": 1.845788210630417e-05,
+          "bits_per_char": 8.8
+        }
+      },
+      "100": {
+        "original_size": 100,
+        "smll": {
+          "size": 18,
+          "ratio": 5.555555555555555,
+          "time": 0.12577033299021423,
+          "bits_per_char": 1.44
+        },
+        "gzip": {
+          "size": 87,
+          "ratio": 1.1494252873563218,
+          "time": 1.7208047211170197e-05,
+          "bits_per_char": 6.96
+        },
+        "bz2": {
+          "size": 113,
+          "ratio": 0.8849557522123894,
+          "time": 4.1624996811151505e-05,
+          "bits_per_char": 9.04
+        },
+        "lzma": {
+          "size": 152,
+          "ratio": 0.6578947368421053,
+          "time": 0.00034587481059134007,
+          "bits_per_char": 12.16
+        },
+        "zstd": {
+          "size": 85,
+          "ratio": 1.1764705882352942,
+          "time": 2.350006252527237e-05,
+          "bits_per_char": 6.8
+        }
+      },
+      "200": {
+        "original_size": 200,
+        "smll": {
+          "size": 32,
+          "ratio": 6.25,
+          "time": 0.22294487501494586,
+          "bits_per_char": 1.28
+        },
+        "gzip": {
+          "size": 145,
+          "ratio": 1.3793103448275863,
+          "time": 2.0999927073717117e-05,
+          "bits_per_char": 5.8
+        },
+        "bz2": {
+          "size": 169,
+          "ratio": 1.183431952662722,
+          "time": 5.85832167416811e-05,
+          "bits_per_char": 6.76
+        },
+        "lzma": {
+          "size": 228,
+          "ratio": 0.8771929824561403,
+          "time": 0.00037441705353558064,
+          "bits_per_char": 9.12
+        },
+        "zstd": {
+          "size": 142,
+          "ratio": 1.408450704225352,
+          "time": 2.9542017728090286e-05,
+          "bits_per_char": 5.68
+        }
+      },
+      "500": {
+        "original_size": 500,
+        "smll": {
+          "size": 61,
+          "ratio": 8.19672131147541,
+          "time": 0.5374165829271078,
+          "bits_per_char": 0.976
+        },
+        "gzip": {
+          "size": 311,
+          "ratio": 1.607717041800643,
+          "time": 2.150004729628563e-05,
+          "bits_per_char": 4.976
+        },
+        "bz2": {
+          "size": 333,
+          "ratio": 1.5015015015015014,
+          "time": 0.0001016668975353241,
+          "bits_per_char": 5.328
+        },
+        "lzma": {
+          "size": 416,
+          "ratio": 1.2019230769230769,
+          "time": 0.000470208004117012,
+          "bits_per_char": 6.656
+        },
+        "zstd": {
+          "size": 318,
+          "ratio": 1.5723270440251573,
+          "time": 4.3625012040138245e-05,
+          "bits_per_char": 5.088
+        }
+      },
+      "1000": {
+        "original_size": 1000,
+        "smll": {
+          "size": 106,
+          "ratio": 9.433962264150944,
+          "time": 1.1297921668738127,
+          "bits_per_char": 0.848
+        },
+        "gzip": {
+          "size": 559,
+          "ratio": 1.7889087656529516,
+          "time": 3.400002606213093e-05,
+          "bits_per_char": 4.472
+        },
+        "bz2": {
+          "size": 591,
+          "ratio": 1.6920473773265652,
+          "time": 0.00019791699014604092,
+          "bits_per_char": 4.728
+        },
+        "lzma": {
+          "size": 688,
+          "ratio": 1.4534883720930232,
+          "time": 0.0006400409620255232,
+          "bits_per_char": 5.504
+        },
+        "zstd": {
+          "size": 568,
+          "ratio": 1.7605633802816902,
+          "time": 7.88751058280468e-05,
+          "bits_per_char": 4.544
+        }
+      },
+      "2000": {
+        "original_size": 2000,
+        "smll": {
+          "size": 416,
+          "ratio": 4.8076923076923075,
+          "time": 1.6892557919491082,
+          "bits_per_char": 1.664
+        },
+        "gzip": {
+          "size": 1039,
+          "ratio": 1.9249278152069298,
+          "time": 4.145805723965168e-05,
+          "bits_per_char": 4.156
+        },
+        "bz2": {
+          "size": 1061,
+          "ratio": 1.885014137606032,
+          "time": 0.0003457500133663416,
+          "bits_per_char": 4.244
+        },
+        "lzma": {
+          "size": 1180,
+          "ratio": 1.694915254237288,
+          "time": 0.0009120830800384283,
+          "bits_per_char": 4.72
+        },
+        "zstd": {
+          "size": 1037,
+          "ratio": 1.9286403085824493,
+          "time": 0.0001402918715029955,
+          "bits_per_char": 4.148
+        }
+      }
+    },
+    "metadata": {}
+  },
+  "head_to_head": {
+    "results": {
+      "Very Short (50 chars)": {
+        "original": 50,
+        "smll": 14,
+        "smll_ratio": 3.5714285714285716,
+        "gzip": 57,
+        "bz2": 82,
+        "lzma": 108,
+        "zstd": 55,
+        "winner": "smll"
+      },
+      "Short (100 chars)": {
+        "original": 100,
+        "smll": 18,
+        "smll_ratio": 5.555555555555555,
+        "gzip": 87,
+        "bz2": 113,
+        "lzma": 152,
+        "zstd": 85,
+        "winner": "smll"
+      },
+      "Medium (500 chars)": {
+        "original": 500,
+        "smll": 61,
+        "smll_ratio": 8.19672131147541,
+        "gzip": 311,
+        "bz2": 333,
+        "lzma": 416,
+        "zstd": 318,
+        "winner": "smll"
+      },
+      "Highly Repetitive": {
+        "original": 630,
+        "smll": 9,
+        "smll_ratio": 70.0,
+        "gzip": 36,
+        "bz2": 77,
+        "lzma": 96,
+        "zstd": 39,
+        "winner": "smll"
+      },
+      "Mixed Code+Comments": {
+        "original": 400,
+        "smll": 19,
+        "smll_ratio": 21.05263157894737,
+        "gzip": 215,
+        "bz2": 262,
+        "lzma": 284,
+        "zstd": 221,
+        "winner": "smll"
+      },
+      "Structured Data": {
+        "original": 400,
+        "smll": 29,
+        "smll_ratio": 13.793103448275861,
+        "gzip": 191,
+        "bz2": 235,
+        "lzma": 252,
+        "zstd": 194,
+        "winner": "smll"
+      },
+      "High Entropy": {
+        "original": 200,
+        "smll": 160,
+        "smll_ratio": 1.25,
+        "gzip": 183,
+        "bz2": 227,
+        "lzma": 256,
+        "zstd": 181,
+        "winner": "smll"
+      }
+    },
+    "metadata": {}
+  },
+  "impossible": {
+    "results": {
+      "To be, or not to be, that is t": {
+        "original": 42,
+        "compressed": 7,
+        "ratio": 6.0,
+        "bits_per_char": 1.3333333333333333
+      },
+      "It was the best of times, it w": {
+        "original": 52,
+        "compressed": 6,
+        "ratio": 8.666666666666666,
+        "bits_per_char": 0.9230769230769231
+      },
+      "All happy families are alike; ": {
+        "original": 76,
+        "compressed": 9,
+        "ratio": 8.444444444444445,
+        "bits_per_char": 0.9473684210526315
+      },
+      "Call me Ishmael.": {
+        "original": 16,
+        "compressed": 6,
+        "ratio": 2.6666666666666665,
+        "bits_per_char": 3.0
+      },
+      "It is a truth universally ackn": {
+        "original": 117,
+        "compressed": 10,
+        "ratio": 11.7,
+        "bits_per_char": 0.6837606837606838
+      },
+      "In the beginning God created t": {
+        "original": 54,
+        "compressed": 7,
+        "ratio": 7.714285714285714,
+        "bits_per_char": 1.037037037037037
+      },
+      "The only thing we have to fear": {
+        "original": 46,
+        "compressed": 8,
+        "ratio": 5.75,
+        "bits_per_char": 1.391304347826087
+      },
+      "I have a dream that one day th": {
+        "original": 53,
+        "compressed": 9,
+        "ratio": 5.888888888888889,
+        "bits_per_char": 1.3584905660377358
+      }
+    },
+    "metadata": {}
+  },
+  "reproducibility": {
+    "results": {
+      "Short text": {
+        "iterations": 3,
+        "deterministic": true,
+        "compressed_size": 6
+      },
+      "Medium text": {
+        "iterations": 3,
+        "deterministic": true,
+        "compressed_size": 32
+      },
+      "Code": {
+        "iterations": 3,
+        "deterministic": true,
+        "compressed_size": 16
+      }
+    },
+    "metadata": {
+      "all_passed": true
+    }
+  }
+}
