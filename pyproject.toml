@@ -1,12 +1,26 @@
 [project]
-name = "smll"
-version = "0.1.0"
+name = "pysmll"
+version = "0.0.0"
 description = "Compression library with C++ backend"
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+authors = [
+    { name = "Frank Chiarulli Jr.", email = "frank@frankchiarulli.com" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: C++",
+    "Operating System :: OS Independent",
+]
 dependencies = [
     "huggingface-hub>=0.20.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/fcjr/smll"
+Repository = "https://github.com/fcjr/smll"
+Issues = "https://github.com/fcjr/smll/issues"
 
 [build-system]
 requires = ["scikit-build-core>=0.9.2", "pybind11>=2.10.0"]
