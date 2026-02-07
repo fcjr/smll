@@ -230,7 +230,7 @@ public:
             // Update interval (using 64-bit to detect overflow)
             uint64_t width = hi - lo;
             lo = lo + static_cast<uint64_t>(prob_before * width);
-            hi = lo + std::max(1ULL, static_cast<uint64_t>(token_prob * width));
+            hi = lo + std::max(static_cast<uint64_t>(1), static_cast<uint64_t>(token_prob * width));
 
             // Add this token to KV cache for next iteration
             llama_decode(ctx, llama_batch_get_one(&token, 1));
@@ -363,7 +363,7 @@ public:
 
             // Update interval
             lo = lo + static_cast<uint64_t>(prob_before * width);
-            hi = lo + std::max(1ULL, static_cast<uint64_t>(token_prob * width));
+            hi = lo + std::max(static_cast<uint64_t>(1), static_cast<uint64_t>(token_prob * width));
 
             // Renormalize
             while (true) {
