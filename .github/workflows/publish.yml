@@ -41,9 +41,9 @@ jobs:
           VERSION="${VERSION}" uv run python scripts/set_version_from_tag.py
           grep -nE '^version\s*=\s*"' pyproject.toml || true
 
-      - name: Build sdist and wheel with uv
+      - name: Build sdist
         run: |
-          uv build
+          uv build --sdist
 
       - name: Publish to PyPI with uv (Trusted Publisher)
         run: |
